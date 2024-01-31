@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/Jdsatashi/GoFiber01/database"
 	"github.com/Jdsatashi/GoFiber01/lead"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
@@ -25,12 +25,12 @@ func initDatabase() {
 	database.DBConn, err = gorm.Open("sqlite3", "leads.db")
 	if err != nil {
 		// panic("Failed connect to database.")
-		fmt.Println("Failed to connect to database:", err)
+		log.Info("Failed to connect to database:", err)
 		os.Exit(1)
 	}
-	fmt.Println("Connected to database.")
+	log.Info("Connected to database.")
 	database.DBConn.AutoMigrate(&lead.Lead{})
-	fmt.Println("Migrating database.")
+	log.Info("Migrating database.")
 }
 
 func main() {

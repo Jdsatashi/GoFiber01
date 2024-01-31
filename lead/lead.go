@@ -1,6 +1,8 @@
 package lead
 
 import (
+	"strconv"
+
 	"github.com/Jdsatashi/GoFiber01/database"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/gorm"
@@ -17,10 +19,21 @@ type Lead struct {
 }
 
 func GetLeads(c *fiber.Ctx) error {
+	//search := c.Query("search", "")
+	var page = c.Query("page", "1")
+	var limit = c.Query("limit", "10")
+
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
+	offset := (intPage - 1) * intLimit
 	db := database.DBConn
 	var leads []Lead
-	db.Find(&leads)
-	return c.JSON(leads)
+	results := db.Limit(intLimit).Offset(offset).Find(&leads)
+	return c.JSON(fiber.Map{
+		"message": "Get Leads successfully.",
+		"Code":    200,
+		"data":    results,
+	})
 }
 
 func GetLead(c *fiber.Ctx) error {
